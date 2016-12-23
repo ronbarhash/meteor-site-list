@@ -9,7 +9,7 @@ Accounts.ui.config({
 	// helper function that returns all available websites
 	Template.website_list.helpers({
 		websites:function(){
-			return Websites.find({});
+			return Websites.find({},{sort:{vote:-1}});
 		}
 	});
 
@@ -22,20 +22,29 @@ Accounts.ui.config({
 		"click .js-upvote":function(event){
 			// example of how you can access the id for the website in the database
 			// (this is the data context for the template)
-			var website_id = this._id;
-			console.log("Up voting website with id "+website_id);
-			// put the code in here to add a vote to a website!
-
+			if (Meteor.user()){
+				var website_id = this._id;
+				this.vote++;
+				console.log("Up voting website with id "+website_id);
+				console.log("Up voting +1 "+this.vote);
+				Websites.update({ _id : website_id } ,{$inc: { vote:1 } });
+				// put the code in here to add a vote to a website!
+			}
 			return false;// prevent the button from reloading the page
 		},
 		"click .js-downvote":function(event){
 
 			// example of how you can access the id for the website in the database
 			// (this is the data context for the template)
-			var website_id = this._id;
-			console.log("Down voting website with id "+website_id);
+			if( Meteor.user() ){
 
-			// put the code in here to remove a vote from a website!
+				var website_id = this._id;
+				this.vote--;
+				Websites.update({ _id : website_id } ,{$inc: { vote:-1 } });
+				console.log("Down voting website with id "+website_id);
+				console.log("Up voting -1 "+this.vote);
+				// put the code in here to remove a vote from a website!
+			}
 
 			return false;// prevent the button from reloading the page
 		}
@@ -52,13 +61,14 @@ Accounts.ui.config({
 			var url = event.target.url.value;
 			var description = event.target.description.value;
 
-			if(Meteor.user() && (url !== "" && description !=="")){
+			if( Meteor.user() && (url !== "" && description !=="") ){
 				console.log("The url they entered is: "+url);
 				Websites.insert({
 				  title: title,
 				  url: url,
 				  description: description,
-				  createdOn:new Date(),
+				  vote: 0,
+				  createdOn:new Date()
 			  	});
 				//  put your website saving code in here!
 				$("#website_form").toggle('hide');
