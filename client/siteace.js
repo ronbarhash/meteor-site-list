@@ -17,7 +17,7 @@ Router.route('/:_id', function(){
 	this.render('website_view',{
 		to: "main",
 		data: function() {
-			console.log(this.params._id);
+
 			return Websites.findOne(this.params._id); }
 
 	});
@@ -40,14 +40,13 @@ Accounts.ui.config({
 
 	Template.website_view.helpers({
 		comments:function(){
+			
 			return Comments.find({'website_id':window.location.pathname.split('/')[1]});
 		},
 		comments1:function(){
 			return Comments.find({'website_id':window.location.pathname.split('/')[1]}).count();
 		},
-		id:function(){
-			return _id;
-		}
+
 	});
 
 
@@ -60,7 +59,7 @@ Accounts.ui.config({
 		// console.log( window.location.pathname.split('/')[1]);
 			// here is an example of how to get the url out of the form:
 			var text = event.target.text.value;
-			console.log(window.location.pathname.split('/')[1]);
+
 			if( Meteor.user() ){
 
 				Comments.insert({
@@ -68,13 +67,13 @@ Accounts.ui.config({
 					website_id: window.location.pathname.split('/')[1],
 					createdOn:new Date()
 				});
-				console.log(text);
+
 
 				//  put your website saving code in here!
 				$("#comment_form").toggle('hide');
 				event.target.text.value = "";
 			}
-
+			location.reload();
 			return false;// stop the form submit from reloading the page
 
 		}
