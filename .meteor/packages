@@ -25,3 +25,5 @@ accounts-password
 barbatus:stars-rating
 twbs:bootstrap
 underscore
+iron:router
+session
